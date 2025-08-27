@@ -34,7 +34,6 @@ export const BookingPage: React.FC = () => {
     mutationFn: ({ bookingId, paymentId }: { bookingId: string; paymentId: string }) =>
       confirmPayment(bookingId, paymentId),
     onSuccess: (booking) => {
-      // Add success notification
       addNotification({
         title: 'Booking Confirmed!',
         message: `Your booking at ${turf.name} for ${formatDate(new Date(timeSlot.date))} is confirmed.`,
@@ -42,12 +41,8 @@ export const BookingPage: React.FC = () => {
         isRead: false,
         actionUrl: '/bookings'
       })
-
-      // Invalidate relevant queries
       queryClient.invalidateQueries({ queryKey: ['bookings'] })
       queryClient.invalidateQueries({ queryKey: ['notifications'] })
-
-      // Navigate to success page
       navigate('/booking-success', { state: { booking } })
     }
   })
@@ -62,6 +57,9 @@ export const BookingPage: React.FC = () => {
       </div>
     )
   }
+  
+  const duration = timeSlot.endTime - timeSlot.startTime;
+  const durationText = `${duration} hour${duration > 1 ? 's' : ''}`;
 
   const handleCreateBooking = async () => {
     createBookingMutation.mutate({
@@ -87,7 +85,6 @@ export const BookingPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-slate-50">
       <div className="max-w-4xl mx-auto px-4 py-8">
-        {/* Header */}
         <div className="flex items-center mb-6">
           <button
             onClick={() => navigate(-1)}
@@ -99,9 +96,7 @@ export const BookingPage: React.FC = () => {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Booking Details */}
           <div className="lg:col-span-2 space-y-6">
-            {/* Turf Info */}
             <Card>
               <CardContent className="p-6">
                 <div className="flex gap-4">
@@ -121,7 +116,6 @@ export const BookingPage: React.FC = () => {
               </CardContent>
             </Card>
 
-            {/* Booking Details */}
             <Card>
               <CardHeader>
                 <h3 className="text-lg font-semibold">Booking Details</h3>
@@ -164,7 +158,6 @@ export const BookingPage: React.FC = () => {
               </CardContent>
             </Card>
 
-            {/* Terms */}
             <Card>
               <CardHeader>
                 <h3 className="text-lg font-semibold">Terms & Conditions</h3>
@@ -181,7 +174,6 @@ export const BookingPage: React.FC = () => {
             </Card>
           </div>
 
-          {/* Booking Summary */}
           <div>
             <Card className="sticky top-8">
               <CardHeader>
@@ -196,7 +188,7 @@ export const BookingPage: React.FC = () => {
                   
                   <div className="flex justify-between">
                     <span className="text-slate-600">Duration</span>
-                    <span className="font-medium">1 hour</span>
+                    <span className="font-medium">{durationText}</span>
                   </div>
                   
                   <div className="flex justify-between">
@@ -227,7 +219,6 @@ export const BookingPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Payment Modal */}
       <Modal
         isOpen={isPaymentModalOpen}
         onClose={() => setIsPaymentModalOpen(false)}
