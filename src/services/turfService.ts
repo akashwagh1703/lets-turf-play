@@ -120,10 +120,106 @@ const mockTurfs: Turf[] = [
     availability: generateTimeSlots('4', 800),
     latitude: 20.0210,
     longitude: 73.8325
+  },
+  {
+    id: '5',
+    name: 'Urban Soccer 5',
+    location: 'Indira Nagar',
+    address: 'Wadala Pathardi Road, Indira Nagar, Nashik 422009',
+    price: 1300,
+    rating: 4.6,
+    reviewCount: 150,
+    amenities: ['Floodlights', 'Parking', 'Washroom', 'Wi-Fi', 'Seating Area'],
+    images: ['https://images.unsplash.com/photo-1526232761621-c2d1844c126c?w=800&h=600'],
+    tags: ['New'],
+    description: 'State-of-the-art 5-a-side turf with high-quality artificial grass.',
+    availability: generateTimeSlots('5', 1300),
+    latitude: 19.956,
+    longitude: 73.765
+  },
+  {
+    id: '6',
+    name: 'Greenfield Arena',
+    location: 'Gangapur Road',
+    address: 'Near Sula Vineyards, Gangapur, Nashik 422222',
+    price: 1400,
+    rating: 4.8,
+    reviewCount: 180,
+    amenities: ['Floodlights', 'Parking', 'Washroom', 'Cafeteria', 'Natural Grass'],
+    images: ['https://images.unsplash.com/photo-1598426472982-f34dd5933431?w=800&h=600'],
+    tags: ['Popular'],
+    description: 'Lush natural grass pitch surrounded by scenic views. A premium playing experience.',
+    availability: generateTimeSlots('6', 1400),
+    latitude: 19.998,
+    longitude: 73.715
+  },
+  {
+    id: '7',
+    name: 'Box Cricket Zone',
+    location: 'Satpur',
+    address: 'MIDC, Satpur Colony, Nashik 422007',
+    price: 900,
+    rating: 4.1,
+    reviewCount: 75,
+    amenities: ['Floodlights', 'Equipment Rental', 'Seating Area'],
+    images: ['https://images.unsplash.com/photo-1612872087720-bb876e2e67d1?w=800&h=600'],
+    description: 'Perfectly enclosed turf for intense box cricket matches.',
+    availability: generateTimeSlots('7', 900),
+    latitude: 19.98,
+    longitude: 73.74
+  },
+  {
+    id: '8',
+    name: 'The Kick Off',
+    location: 'Deolali Camp',
+    address: 'Lam Road, Deolali Camp, Nashik 422401',
+    price: 1100,
+    rating: 4.3,
+    reviewCount: 112,
+    amenities: ['Floodlights', 'Parking', 'Washroom', 'Drinking Water'],
+    images: ['https://images.unsplash.com/photo-1599330293288-e8ac52290f87?w=800&h=600'],
+    description: 'A spacious and well-lit turf suitable for 7v7 matches.',
+    availability: generateTimeSlots('8', 1100),
+    latitude: 19.89,
+    longitude: 73.83
+  },
+  {
+    id: '9',
+    name: 'Playmakers Hub',
+    location: 'Pathardi Phata',
+    address: 'Mumbai-Agra Highway, Pathardi Phata, Nashik 422010',
+    price: 1250,
+    rating: 4.4,
+    reviewCount: 95,
+    amenities: ['Floodlights', 'Parking', 'Changing Room', 'First Aid'],
+    images: ['https://images.unsplash.com/photo-1628891883912-4c58b74b1243?w=800&h=600'],
+    tags: ['Best Value'],
+    description: 'Easily accessible turf right on the highway, perfect for a quick game.',
+    availability: generateTimeSlots('9', 1250),
+    latitude: 19.94,
+    longitude: 73.77
+  },
+  {
+    id: '10',
+    name: 'Rooftop Reds',
+    location: 'Canada Corner',
+    address: 'Above Pinnacle Mall, Canada Corner, Nashik 422002',
+    price: 1600,
+    rating: 4.9,
+    reviewCount: 250,
+    amenities: ['Floodlights', 'Washroom', 'Cafeteria', 'Wi-Fi', 'Seating Area'],
+    images: ['https://images.unsplash.com/photo-1542751371-6593c654997a?w=800&h=600'],
+    tags: ['Popular'],
+    description: 'Unique rooftop turf offering a stunning city view while you play.',
+    availability: generateTimeSlots('10', 1600),
+    latitude: 20.00,
+    longitude: 73.78
   }
 ]
 
-export const getTurfs = async (filters?: SearchFilters): Promise<Turf[]> => {
+const PAGE_SIZE = 6;
+
+export const getTurfs = async (filters?: SearchFilters): Promise<{ data: Turf[], nextPage?: number }> => {
   await new Promise(resolve => setTimeout(resolve, 800))
   
   let filteredTurfs = [...mockTurfs]
@@ -132,6 +228,7 @@ export const getTurfs = async (filters?: SearchFilters): Promise<Turf[]> => {
     if (filters.location) {
       filteredTurfs = filteredTurfs.filter(turf => 
         turf.location.toLowerCase().includes(filters.location!.toLowerCase()) ||
+        turf.name.toLowerCase().includes(filters.location!.toLowerCase()) ||
         turf.address.toLowerCase().includes(filters.location!.toLowerCase())
       )
     }
@@ -168,16 +265,20 @@ export const getTurfs = async (filters?: SearchFilters): Promise<Turf[]> => {
               const distB = getDistance(filters.latitude!, filters.longitude!, b.latitude!, b.longitude!)
               return distA - distB
             })
-          } else {
-            // Fallback for 'nearest' if no location provided
-            filteredTurfs.sort(() => Math.random() - 0.5)
           }
           break
       }
     }
   }
+
+  const page = filters?.pageParam || 0;
+  const start = page * PAGE_SIZE;
+  const end = start + PAGE_SIZE;
+
+  const paginatedData = filteredTurfs.slice(start, end);
+  const nextPage = end < filteredTurfs.length ? page + 1 : undefined;
   
-  return filteredTurfs
+  return { data: paginatedData, nextPage };
 }
 
 export const getTurfById = async (id: string): Promise<Turf | null> => {

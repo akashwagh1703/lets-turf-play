@@ -2,33 +2,52 @@ import React from 'react';
 import { motion } from 'framer-motion';
 
 export const AnimatedLoader: React.FC = () => {
-  return (
-    <div className="fixed inset-0 bg-dark flex flex-col items-center justify-center z-[100] backdrop-blur-sm">
-      <div className="relative w-48 h-48">
-        {/* Bat */}
-        <div 
-          className="absolute bottom-10 left-1/2 -translate-x-1/2 w-32 h-5 bg-amber-600 rounded-md shadow-lg"
-          style={{ transform: 'rotate(-15deg)' }}
-        />
+  const containerVariants = {
+    start: {
+      transition: {
+        staggerChildren: 0.1,
+      },
+    },
+    end: {
+      transition: {
+        staggerChildren: 0.1,
+      },
+    },
+  };
 
-        {/* Ball */}
+  const circleVariants = {
+    start: {
+      y: '0%',
+    },
+    end: {
+      y: '100%',
+    },
+  };
+
+  const transition = {
+    duration: 0.5,
+    repeat: Infinity,
+    repeatType: 'reverse' as const,
+    ease: 'easeInOut',
+  };
+
+  return (
+    <div className="fixed inset-0 bg-background/90 backdrop-blur-sm flex flex-col items-center justify-center z-[100]">
+      <div className="flex flex-col items-center gap-6">
+        <div className="w-24 h-24 bg-primary rounded-2xl flex items-center justify-center font-bold text-primary-foreground text-4xl shadow-glow-primary">
+          LTP
+        </div>
         <motion.div
-          className="absolute w-6 h-6 bg-white rounded-full shadow-md"
-          style={{ left: 'calc(50% - 12px)', bottom: 45 }}
-          animate={{
-            y: [0, -80, 0],
-            rotate: [0, 180, 360],
-          }}
-          transition={{
-            duration: 1.2,
-            ease: "easeInOut",
-            repeat: Infinity,
-          }}
-        />
+          className="w-24 h-8 flex justify-around"
+          variants={containerVariants}
+          initial="start"
+          animate="end"
+        >
+          <motion.span className="block w-4 h-4 bg-primary/80 rounded-full" variants={circleVariants} transition={transition} />
+          <motion.span className="block w-4 h-4 bg-primary/80 rounded-full" variants={circleVariants} transition={transition} />
+          <motion.span className="block w-4 h-4 bg-primary/80 rounded-full" variants={circleVariants} transition={transition} />
+        </motion.div>
       </div>
-      <p className="text-white mt-8 font-semibold text-lg tracking-wider animate-pulse">
-        Loading the field...
-      </p>
     </div>
   );
 };

@@ -62,9 +62,9 @@ export const ProfilePage: React.FC = () => {
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <h2 className="text-xl font-semibold text-slate-900 mb-2">User not found</h2>
+          <h2 className="text-xl font-semibold text-foreground mb-2">User not found</h2>
           <Button onClick={() => window.location.href = '/login'}>Login</Button>
         </div>
       </div>
@@ -72,10 +72,10 @@ export const ProfilePage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen">
       <div className="max-w-2xl mx-auto px-4 py-8">
         <div className="flex justify-between items-center mb-8">
-          <h1 className="text-2xl font-bold text-slate-900">Profile</h1>
+          <h1 className="text-2xl font-bold text-foreground">Profile</h1>
           
           {!isEditing ? (
             <Button onClick={() => setIsEditing(true)} variant="outline" size="sm">
@@ -112,7 +112,7 @@ export const ProfilePage: React.FC = () => {
             </CardHeader>
             <CardContent className="p-6 pt-0">
               <div className="flex items-center gap-6 mb-6">
-                <div className="w-20 h-20 bg-slate-200 rounded-full flex items-center justify-center">
+                <div className="w-20 h-20 bg-muted rounded-full flex items-center justify-center">
                   {user.profileImage ? (
                     <img
                       src={user.profileImage}
@@ -120,13 +120,13 @@ export const ProfilePage: React.FC = () => {
                       className="w-20 h-20 rounded-full object-cover"
                     />
                   ) : (
-                    <User className="w-10 h-10 text-slate-400" />
+                    <User className="w-10 h-10 text-muted-foreground" />
                   )}
                 </div>
                 
                 <div className="flex-1">
-                  <h2 className="text-xl font-semibold text-slate-900">{user.name}</h2>
-                  <p className="text-slate-600">{user.phone}</p>
+                  <h2 className="text-xl font-semibold text-foreground">{user.name}</h2>
+                  <p className="text-muted-foreground">{user.phone}</p>
                 </div>
               </div>
 
@@ -151,7 +151,7 @@ export const ProfilePage: React.FC = () => {
                   label="Phone Number"
                   value={user.phone}
                   disabled
-                  className="bg-slate-100"
+                  className="bg-muted"
                 />
               </div>
             </CardContent>
@@ -161,7 +161,7 @@ export const ProfilePage: React.FC = () => {
           <Card>
             <CardHeader>
               <h3 className="text-lg font-semibold flex items-center">
-                <MapPin className="w-5 h-5 mr-2" />
+                <MapPin className="w-5 h-5 mr-2 text-secondary" />
                 Location Preference
               </h3>
             </CardHeader>
@@ -174,7 +174,7 @@ export const ProfilePage: React.FC = () => {
                 placeholder="e.g., Nashik Road, Panchavati"
               />
               {!isEditing && formData.favoriteLocation && (
-                <p className="text-sm text-slate-600 mt-2">
+                <p className="text-sm text-muted-foreground mt-2">
                   We'll prioritize turfs near this location in search results
                 </p>
               )}
@@ -185,7 +185,7 @@ export const ProfilePage: React.FC = () => {
           <Card>
             <CardHeader>
               <h3 className="text-lg font-semibold flex items-center">
-                <Heart className="w-5 h-5 mr-2" />
+                <Heart className="w-5 h-5 mr-2 text-accent" />
                 Preferred Amenities
               </h3>
             </CardHeader>
@@ -198,10 +198,10 @@ export const ProfilePage: React.FC = () => {
                     disabled={!isEditing}
                     className={`p-3 rounded-lg border-2 transition-colors text-sm ${
                       formData.preferredAmenities.includes(amenity)
-                        ? 'border-accent-600 bg-accent-50 text-accent-700'
-                        : 'border-slate-200 hover:border-slate-300'
-                    } ${!isEditing ? 'cursor-default' : 'cursor-pointer'} ${
-                      !isEditing && !formData.preferredAmenities.includes(amenity) ? 'opacity-50' : ''
+                        ? 'border-primary bg-primary/10 text-primary'
+                        : 'border-border'
+                    } ${isEditing ? 'cursor-pointer hover:border-primary/50' : 'cursor-default'} ${
+                      !isEditing && !formData.preferredAmenities.includes(amenity) ? 'opacity-60' : ''
                     }`}
                   >
                     {amenity}
@@ -209,7 +209,7 @@ export const ProfilePage: React.FC = () => {
                 ))}
               </div>
               {!isEditing && (
-                <p className="text-sm text-slate-600 mt-4">
+                <p className="text-sm text-muted-foreground mt-4">
                   {formData.preferredAmenities.length > 0
                     ? `You have selected ${formData.preferredAmenities.length} preferred amenities`
                     : 'No preferred amenities selected'}
@@ -231,7 +231,7 @@ export const ProfilePage: React.FC = () => {
                 <Button variant="outline" className="w-full justify-start">
                   Privacy Settings
                 </Button>
-                <Button variant="outline" className="w-full justify-start text-red-600 border-red-200 hover:bg-red-50">
+                <Button variant="outline" className="w-full justify-start text-destructive border-destructive/20 hover:bg-destructive/10">
                   Delete Account
                 </Button>
               </div>

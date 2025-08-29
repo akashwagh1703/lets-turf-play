@@ -8,6 +8,7 @@ import { Modal } from '../components/ui/Modal'
 import { formatCurrency, formatDate, formatTime } from '../lib/utils'
 import { Booking } from '../types'
 import { motion } from 'framer-motion'
+import { useNavigate } from 'react-router-dom'
 
 export const BookingsPage: React.FC = () => {
   const [filter, setFilter] = useState<'upcoming' | 'past' | 'cancelled'>('upcoming')
@@ -15,6 +16,7 @@ export const BookingsPage: React.FC = () => {
   const [isCancelModalOpen, setIsCancelModalOpen] = useState(false)
   
   const queryClient = useQueryClient()
+  const navigate = useNavigate()
 
   const { data: bookings = [], isLoading } = useQuery({
     queryKey: ['bookings'],
@@ -98,10 +100,10 @@ export const BookingsPage: React.FC = () => {
     return (
       <div className="min-h-screen">
         <div className="max-w-4xl mx-auto px-4 py-8">
-          <div className="h-8 bg-gray-200 rounded mb-6 w-1/4 animate-pulse" />
+          <div className="h-8 bg-muted rounded mb-6 w-1/4 animate-pulse" />
           <div className="space-y-4">
             {[...Array(3)].map((_, i) => (
-              <Card key={i} className="animate-pulse h-32 bg-white" />
+              <Card key={i} className="animate-pulse h-32" />
             ))}
           </div>
         </div>
@@ -113,9 +115,9 @@ export const BookingsPage: React.FC = () => {
     <div className="min-h-screen">
       <div className="max-w-4xl mx-auto px-4 py-8">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
-          <h1 className="text-3xl font-bold text-dark">My Bookings</h1>
+          <h1 className="text-3xl font-bold text-foreground">My Bookings</h1>
           
-          <div className="flex bg-white rounded-lg border border-gray-200 p-1 shadow-sm">
+          <div className="flex bg-card rounded-lg border border-border p-1 shadow-sm">
             {[
               { key: 'upcoming', label: 'Upcoming' },
               { key: 'past', label: 'Past' },
@@ -126,8 +128,8 @@ export const BookingsPage: React.FC = () => {
                 onClick={() => setFilter(key as any)}
                 className={`px-3 py-1.5 text-sm font-medium rounded-md transition-all duration-300 ${
                   filter === key
-                    ? 'bg-primary text-white shadow'
-                    : 'text-foreground/70 hover:text-dark'
+                    ? 'bg-primary text-primary-foreground shadow'
+                    : 'text-muted-foreground hover:text-foreground'
                 }`}
               >
                 {label}
@@ -137,12 +139,12 @@ export const BookingsPage: React.FC = () => {
         </div>
 
         {filteredBookings.length === 0 ? (
-          <div className="text-center py-12 bg-white rounded-lg shadow-sm border">
-            <Calendar className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-dark mb-2">
+          <div className="text-center py-12 bg-card rounded-lg shadow-sm border">
+            <Calendar className="w-12 h-12 text-muted-foreground/50 mx-auto mb-4" />
+            <h3 className="text-lg font-medium text-foreground mb-2">
               No {filter} bookings found
             </h3>
-            <p className="text-foreground/80 mb-4">
+            <p className="text-muted-foreground mb-4">
               Time to get on the field!
             </p>
             <Button onClick={() => navigate('/search')} variant="primary">
@@ -160,8 +162,12 @@ export const BookingsPage: React.FC = () => {
             animate="show"
           >
             {filteredBookings.map((booking) => (
-              <motion.div key={booking.id} variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } }}>
-                <Card className="overflow-hidden bg-white hover:shadow-lg transition-shadow duration-300">
+              <motion.div 
+                key={booking.id} 
+                variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } }}
+                whileHover={{ y: -5, transition: { duration: 0.2 } }}
+              >
+                <Card className="overflow-hidden hover:shadow-lg transition-shadow duration-300">
                   <CardContent className="p-4 sm:p-6">
                     <div className="flex flex-col sm:flex-row gap-4">
                       <div className="w-full sm:w-32 h-24 rounded-md overflow-hidden flex-shrink-0">
@@ -171,8 +177,8 @@ export const BookingsPage: React.FC = () => {
                       <div className="flex-1">
                         <div className="flex justify-between items-start">
                           <div>
-                            <h3 className="text-lg font-semibold text-dark">{booking.turfName}</h3>
-                            <div className="flex items-center text-foreground/80 mt-1">
+                            <h3 className="text-lg font-semibold text-foreground">{booking.turfName}</h3>
+                            <div className="flex items-center text-muted-foreground mt-1">
                               <MapPin className="w-4 h-4 mr-1" />
                               <span className="text-sm">{booking.turfLocation}</span>
                             </div>
@@ -180,7 +186,7 @@ export const BookingsPage: React.FC = () => {
                           <div className="flex items-center gap-2">
                             {getStatusPill(booking.status, booking.date, booking.startTime)}
                             {canCancelBooking(booking) && (
-                              <button onClick={() => { setSelectedBooking(booking); setIsCancelModalOpen(true); }} className="text-gray-400 hover:text-dark">
+                              <button onClick={() => { setSelectedBooking(booking); setIsCancelModalOpen(true); }} className="text-muted-foreground hover:text-foreground">
                                 <MoreVertical className="w-4 h-4" />
                               </button>
                             )}
@@ -210,8 +216,8 @@ export const BookingsPage: React.FC = () => {
           </div>
           {selectedBooking && (
             <div className="bg-muted rounded-md p-4">
-              <p className="font-medium text-dark">{selectedBooking.turfName}</p>
-              <p className="text-sm text-foreground/80">{formatDate(new Date(selectedBooking.date))} at {formatTime(selectedBooking.startTime)}</p>
+              <p className="font-medium text-foreground">{selectedBooking.turfName}</p>
+              <p className="text-sm text-muted-foreground">{formatDate(new Date(selectedBooking.date))} at {formatTime(selectedBooking.startTime)}</p>
               <p className="text-sm font-medium text-primary">{formatCurrency(selectedBooking.totalAmount)}</p>
             </div>
           )}

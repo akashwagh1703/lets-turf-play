@@ -8,11 +8,11 @@ export const Footer: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Logo and About */}
           <div>
-            <div className="flex items-center space-x-2 mb-4">
-              <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-xl">T</span>
+            <div className="flex items-center space-x-3 mb-4">
+              <div className="w-9 h-9 bg-primary rounded-lg flex items-center justify-center font-bold text-white text-sm">
+                LTP
               </div>
-              <span className="text-xl font-bold text-white">TurfBooker</span>
+              <span className="text-xl font-bold text-white">Lets Turf Play</span>
             </div>
             <p className="text-sm text-gray-400">
               The easiest way to find and book your favorite sports turf.
@@ -61,7 +61,7 @@ export const Footer: React.FC = () => {
         </div>
 
         <div className="mt-8 border-t border-gray-700 pt-8 text-center">
-          <p className="text-base text-gray-400">&copy; 2025 TurfBooker. All rights reserved.</p>
+          <p className="text-base text-gray-400">&copy; 2025 Lets Turf Play. All rights reserved.</p>
         </div>
       </div>
     </footer>

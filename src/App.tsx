@@ -1,12 +1,11 @@
 import React from 'react'
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
-import { LazyMotion, domAnimation } from 'framer-motion'
+import { LazyMotion, domAnimation, AnimatePresence } from 'framer-motion'
 import { AuthContext, useAuthState } from './hooks/useAuth'
 import { Navbar } from './components/layout/Navbar'
 import { BottomNav } from './components/layout/BottomNav'
-import { Footer } from './components/layout/Footer'
 import { ProtectedRoute } from './components/ProtectedRoute'
 import { AnimatedLoader } from './components/ui/AnimatedLoader'
 
@@ -20,6 +19,7 @@ import { BookingSuccessPage } from './pages/BookingSuccessPage'
 import { BookingsPage } from './pages/BookingsPage'
 import { NotificationsPage } from './pages/NotificationsPage'
 import { ProfilePage } from './pages/ProfilePage'
+import { PageShell } from './components/ui/PageShell'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -30,6 +30,32 @@ const queryClient = new QueryClient({
   },
 })
 
+const AnimatedRoutes = () => {
+  const location = useLocation()
+
+  return (
+    <AnimatePresence mode="wait">
+      <Routes location={location} key={location.pathname}>
+        {/* Public Routes */}
+        <Route path="/login" element={<PageShell><LoginPage /></PageShell>} />
+        <Route path="/onboarding" element={<PageShell><OnboardingPage /></PageShell>} />
+        
+        {/* Protected Routes */}
+        <Route path="/search" element={<ProtectedRoute><PageShell><SearchPage /></PageShell></ProtectedRoute>} />
+        <Route path="/turf/:id" element={<ProtectedRoute><PageShell><TurfDetailPage /></PageShell></ProtectedRoute>} />
+        <Route path="/booking" element={<ProtectedRoute><PageShell><BookingPage /></PageShell></ProtectedRoute>} />
+        <Route path="/booking-success" element={<ProtectedRoute><PageShell><BookingSuccessPage /></PageShell></ProtectedRoute>} />
+        <Route path="/bookings" element={<ProtectedRoute><PageShell><BookingsPage /></PageShell></ProtectedRoute>} />
+        <Route path="/notifications" element={<ProtectedRoute><PageShell><NotificationsPage /></PageShell></ProtectedRoute>} />
+        <Route path="/profile" element={<ProtectedRoute><PageShell><ProfilePage /></PageShell></ProtectedRoute>} />
+        
+        {/* Default Redirects */}
+        <Route path="/*" element={<ProtectedRoute><PageShell><SearchPage /></PageShell></ProtectedRoute>} />
+      </Routes>
+    </AnimatePresence>
+  )
+}
+
 const AppContent: React.FC = () => {
   const authState = useAuthState()
 
@@ -39,38 +65,14 @@ const AppContent: React.FC = () => {
         <AnimatedLoader />
       ) : (
         <Router>
-          <div className="min-h-screen bg-background flex flex-col">
+          <div className="min-h-screen bg-background text-foreground flex flex-col">
             {authState.isAuthenticated && <Navbar />}
             
-            <main className="flex-grow pb-20 md:pb-0">
-              <Routes>
-                {/* Public Routes */}
-                <Route path="/login" element={<LoginPage />} />
-                <Route path="/onboarding" element={<OnboardingPage />} />
-                
-                {/* Protected Routes */}
-                <Route path="/search" element={<ProtectedRoute><SearchPage /></ProtectedRoute>} />
-                <Route path="/turf/:id" element={<ProtectedRoute><TurfDetailPage /></ProtectedRoute>} />
-                <Route path="/booking" element={<ProtectedRoute><BookingPage /></ProtectedRoute>} />
-                <Route path="/booking-success" element={<ProtectedRoute><BookingSuccessPage /></ProtectedRoute>} />
-                <Route path="/bookings" element={<ProtectedRoute><BookingsPage /></ProtectedRoute>} />
-                <Route path="/notifications" element={<ProtectedRoute><NotificationsPage /></ProtectedRoute>} />
-                <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
-                
-                {/* Default Redirects */}
-                <Route path="/" element={
-                  authState.isAuthenticated ? 
-                    <Navigate to="/search" replace /> : 
-                    <Navigate to="/login" replace />
-                } />
-                <Route path="*" element={
-                  <Navigate to={authState.isAuthenticated ? "/search" : "/login"} replace />
-                } />
-              </Routes>
+            <main className="flex-grow pt-16 md:pt-20">
+              <AnimatedRoutes />
             </main>
             
             {authState.isAuthenticated && <BottomNav />}
-            {authState.isAuthenticated && <Footer />}
           </div>
         </Router>
       )}

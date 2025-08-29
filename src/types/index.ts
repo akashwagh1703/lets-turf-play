@@ -86,4 +86,5 @@ export interface SearchFilters {
   sortBy?: 'nearest' | 'cheapest' | 'rating'
   latitude?: number
   longitude?: number
+  pageParam?: number
 }

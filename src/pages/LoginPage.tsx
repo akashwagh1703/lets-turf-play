@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Phone, KeyRound } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
 import { sendOTP, verifyOTP } from '../services/authService';
@@ -67,28 +67,31 @@ export const LoginPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-background grid grid-cols-1 lg:grid-cols-2">
-      {/* Left Panel - Image and Welcome */}
-      <div className="relative hidden lg:flex flex-col justify-end items-start p-12 bg-login-hero bg-cover bg-center">
-        <div className="absolute inset-0 bg-dark/70" />
+      <div className="relative hidden lg:flex flex-col justify-end items-start p-12 bg-login-hero bg-cover bg-center animate-background-pan" style={{ backgroundSize: '150%' }}>
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent" />
         <motion.div
           className="relative z-10"
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: 'easeOut', delay: 0.2 }}
+          transition={{ duration: 0.8, ease: 'easeOut', delay: 0.3 }}
         >
-          <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center mb-6">
-            <span className="text-white font-bold text-4xl">T</span>
-          </div>
-          <h1 className="text-4xl font-bold text-white leading-tight">
-            Welcome to TurfBooker
+          <motion.div
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ duration: 0.5, delay: 0.5, type: 'spring', stiffness: 150 }}
+            className="w-20 h-20 bg-primary rounded-2xl flex items-center justify-center mb-6 font-bold text-primary-foreground text-3xl shadow-glow-primary"
+          >
+            LTP
+          </motion.div>
+          <h1 className="text-5xl font-bold text-white leading-tight">
+            Your Next Match
           </h1>
-          <p className="text-lg text-gray-300 mt-4">
-            Your next match is just a few clicks away.
+          <p className="text-xl text-gray-200 mt-4 max-w-md">
+            Discover and book premium sports turfs in seconds.
           </p>
         </motion.div>
       </div>
 
-      {/* Right Panel - Login Form */}
       <div className="flex items-center justify-center p-4 lg:p-8">
         <motion.div
           className="max-w-md w-full"
@@ -96,18 +99,18 @@ export const LoginPage: React.FC = () => {
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.5, ease: 'easeOut' }}
         >
-          <div className="bg-white rounded-xl shadow-2xl p-8">
+          <div className="bg-card rounded-2xl shadow-lifted p-8 border border-border">
             <div className="text-center mb-8">
-              <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-4 lg:hidden">
-                <span className="text-white font-bold text-3xl">T</span>
+              <div className="w-16 h-16 bg-primary rounded-xl flex items-center justify-center mx-auto mb-4 lg:hidden font-bold text-primary-foreground text-2xl">
+                LTP
               </div>
-              <h1 className="text-2xl font-bold text-dark">
-                {step === 'phone' ? 'Sign In or Sign Up' : 'Enter Verification Code'}
+              <h1 className="text-3xl font-bold text-foreground">
+                {step === 'phone' ? 'Welcome Back' : 'Enter Code'}
               </h1>
-              <p className="text-foreground/80 mt-2">
+              <p className="text-muted-foreground mt-2">
                 {step === 'phone'
-                  ? 'Enter your phone number to get started.'
-                  : `An OTP was sent to +91 ${phoneNumber}`}
+                  ? 'Enter your phone number to sign in or create an account.'
+                  : `A 6-digit code was sent to +91 ${phoneNumber}`}
               </p>
             </div>
 
@@ -117,34 +120,36 @@ export const LoginPage: React.FC = () => {
                   <Input
                     label="Phone Number"
                     type="tel"
-                    placeholder="Enter 10-digit mobile number"
+                    placeholder="10-digit mobile number"
                     value={phoneNumber}
                     onChange={(e) => setPhoneNumber(e.target.value.replace(/\D/g, '').slice(0, 10))}
                     error={error}
+                    icon={<Phone size={20} />}
                     required
                   />
                 </div>
-                <Button type="submit" className="w-full" isLoading={isLoading} variant="primary">
-                  Send OTP
-                  <ArrowRight className="w-4 h-4 ml-2" />
+                <Button type="submit" size="lg" className="w-full" isLoading={isLoading} variant="primary">
+                  Send Code
+                  <ArrowRight className="w-5 h-5" />
                 </Button>
               </form>
             ) : (
               <form onSubmit={handleVerifyOTP} className="space-y-6">
                 <div>
                   <Input
-                    label="One-Time Password"
+                    label="Verification Code"
                     type="text"
-                    placeholder="Enter 6-digit OTP"
+                    placeholder="6-digit code"
                     value={otp}
                     onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
                     error={error}
+                    icon={<KeyRound size={20} />}
                     required
                   />
                 </div>
-                <Button type="submit" className="w-full" isLoading={isLoading} variant="primary">
+                <Button type="submit" size="lg" className="w-full" isLoading={isLoading} variant="primary">
                   Verify & Proceed
-                  <ArrowRight className="w-4 h-4 ml-2" />
+                  <ArrowRight className="w-5 h-5" />
                 </Button>
               </form>
             )}
@@ -160,13 +165,13 @@ export const LoginPage: React.FC = () => {
                   }}
                   className="text-primary hover:text-primary/80 text-sm font-medium"
                 >
-                  Change phone number
+                  Use a different number
                 </button>
               )}
-              <p className="text-xs text-foreground/60 mt-4">
+              <p className="text-xs text-muted-foreground mt-4">
                 By continuing, you agree to our Terms of Service and Privacy Policy.
               </p>
-              <p className="mt-2 text-sm text-foreground/80">Demo OTP: <span className="font-mono font-bold">123456</span></p>
+              <p className="mt-2 text-sm text-muted-foreground">Demo OTP: <span className="font-mono font-bold text-primary">123456</span></p>
             </div>
           </div>
         </motion.div>

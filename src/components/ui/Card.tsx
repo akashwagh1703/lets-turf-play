@@ -8,7 +8,7 @@ interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
 export const Card: React.FC<CardProps> = ({ className, children, ...props }) => {
   return (
     <div
-      className={cn('bg-white rounded-lg border border-gray-200 shadow-sm', className)}
+      className={cn('bg-card rounded-xl border border-border shadow-soft', className)}
       {...props}
     >
       {children}
@@ -18,7 +18,7 @@ export const Card: React.FC<CardProps> = ({ className, children, ...props }) => 
 
 export const CardHeader: React.FC<CardProps> = ({ className, children, ...props }) => {
   return (
-    <div className={cn('px-6 py-4 border-b border-gray-200', className)} {...props}>
+    <div className={cn('p-6 border-b border-border', className)} {...props}>
       {children}
     </div>
   )
@@ -26,7 +26,7 @@ export const CardHeader: React.FC<CardProps> = ({ className, children, ...props 
 
 export const CardContent: React.FC<CardProps> = ({ className, children, ...props }) => {
   return (
-    <div className={cn('px-6 py-4', className)} {...props}>
+    <div className={cn('p-6', className)} {...props}>
       {children}
     </div>
   )
@@ -34,7 +34,7 @@ export const CardContent: React.FC<CardProps> = ({ className, children, ...props
 
 export const CardFooter: React.FC<CardProps> = ({ className, children, ...props }) => {
   return (
-    <div className={cn('px-6 py-4 border-t border-gray-200', className)} {...props}>
+    <div className={cn('p-6 border-t border-border', className)} {...props}>
       {children}
     </div>
   )

@@ -2,6 +2,7 @@ import React from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { Search, Calendar, Bell, User } from 'lucide-react'
 import { motion } from 'framer-motion'
+import { cn } from '../../lib/utils'
 
 const navItems = [
   { href: '/search', label: 'Search', icon: Search },
@@ -16,44 +17,40 @@ export const BottomNav: React.FC = () => {
 
   return (
     <motion.div
-      initial={{ y: 100 }}
-      animate={{ y: 0 }}
-      transition={{ type: 'spring', stiffness: 100, damping: 20 }}
-      className="fixed bottom-0 left-0 right-0 h-20 bg-white/80 backdrop-blur-lg border-t border-gray-200 md:hidden z-40"
+      initial={{ y: '100%' }}
+      animate={{ y: '0%' }}
+      transition={{ type: 'spring', stiffness: 200, damping: 30, delay: 0.5 }}
+      className="fixed bottom-0 left-0 right-0 h-24 bg-white/80 backdrop-blur-xl border-t border-border md:hidden z-40"
     >
-      <div className="flex justify-around items-center h-full max-w-md mx-auto">
+      <div className="flex justify-around items-center h-full max-w-md mx-auto px-2">
         {navItems.map((item) => {
           if (item.href === '/logo') {
             return (
-              <Link to="/search" key={item.href} className="flex flex-col items-center justify-center w-full h-full relative -mt-6">
-                <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center shadow-lg border-4 border-white">
-                  <span className="text-white font-bold text-3xl">T</span>
-                </div>
+              <Link to="/search" key={item.href} className="flex flex-col items-center justify-center w-1/5 h-full relative -mt-10">
+                <motion.div 
+                  whileTap={{ scale: 0.9 }}
+                  className="w-20 h-20 bg-primary rounded-full flex items-center justify-center shadow-glow-primary border-4 border-background"
+                >
+                  <span className="text-primary-foreground font-bold text-2xl">LTP</span>
+                </motion.div>
               </Link>
             )
           }
 
           const isActive = location.pathname.startsWith(item.href)
           return (
-            <Link to={item.href} key={item.href} className="flex flex-col items-center justify-center w-full h-full relative">
-              <item.icon
-                className={`w-6 h-6 transition-colors ${
-                  isActive ? 'text-dark' : 'text-gray-400'
-                }`}
-              />
-              <span
-                className={`text-xs mt-1 transition-colors ${
-                  isActive ? 'text-dark font-semibold' : 'text-gray-500'
-                }`}
-              >
-                {item.label}
-              </span>
-              {isActive && (
-                <motion.div
-                  layoutId="bottom-nav-underline"
-                  className="absolute bottom-1.5 h-1 w-6 bg-primary rounded-full"
+            <Link to={item.href} key={item.href} className="flex flex-col items-center justify-center w-1/5 h-full relative">
+              <div className="relative">
+                <item.icon
+                  className={cn('w-7 h-7 transition-all duration-300', isActive ? 'text-primary' : 'text-muted-foreground/70')}
                 />
-              )}
+                {isActive && (
+                  <motion.div
+                    layoutId="bottom-nav-active-dot"
+                    className="absolute -bottom-2 left-1/2 -translate-x-1/2 h-1.5 w-1.5 bg-primary rounded-full"
+                  />
+                )}
+              </div>
             </Link>
           )
         })}
